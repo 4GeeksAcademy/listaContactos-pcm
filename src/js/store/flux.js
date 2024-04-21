@@ -1,42 +1,53 @@
 const getState = ({ getStore, getActions, setStore }) => {
 	return {
 		store: {
-			demo: [
-				{
-					title: "FIRST",
-					background: "white",
-					initial: "white"
-				},
-				{
-					title: "SECOND",
-					background: "white",
-					initial: "white"
-				}
-			]
+			name: "",
+			phone: "",
+			correo: "",
+			direccion: "",
+			contactos: []
 		},
 		actions: {
-			// Use getActions to call a function within a fuction
-			exampleFunction: () => {
-				getActions().changeColor(0, "green");
+			guardarContacto: function ({ nombre, direccion, correo, telefono }) {
+				fetch("https://playground.4geeks.com/contact/agendas/user_pcm/contacts", {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json', 'accept': 'application/json' },
+					body: JSON.stringify({ 'name': nombre, 'phone': telefono, 'email': correo, 'address': direccion}),
+				})
+					.then(response => {
+						if (!response.ok) {
+							console.error('Error al enviar datos');
+							throw new Error('Error al enviar datos');
+						}
+						return response.json();
+					})
+					.then(data => {
+						console.log('Datos guardados correctamente:', data);
+						setStore({ contactos: data.contacts });
+					})
+					.catch(error => console.error('Error:', error));
 			},
-			loadSomeData: () => {
-				/**
-					fetch().then().then(data => setStore({ "foo": data.bar }))
-				*/
+			cargarContactos: function () {
+				fetch("https://playground.4geeks.com/contact/agendas/user_pcm")
+					.then((response) => response.json())
+					.then((data) => {
+						setStore({ contactos: data.contacts });
+					})
+					.catch((error) => console.error(error));
 			},
-			changeColor: (index, color) => {
-				//get the store
-				const store = getStore();
-
-				//we have to loop the entire demo array to look for the respective index
-				//and change its color
-				const demo = store.demo.map((elm, i) => {
-					if (i === index) elm.background = color;
-					return elm;
-				});
-
-				//reset the global store
-				setStore({ demo: demo });
+			borrarContacto: function (id) {
+				fetch('https://playground.4geeks.com/contact/agendas/user_pcm/contacts/'+ id, {
+					method: 'DELETE'
+				})
+					.then(response => {
+						if (!response.ok) {
+							throw new Error('Error al borrar el contacto');
+						}
+						const updatedContacts = getStore().contactos.filter(contacto => contacto.id !== id);
+						setStore({ contactos: updatedContacts });
+						console.log('Contacto borrado correctamente');
+					})
+					.catch(error => console.error(error));
 			}
 		}
 	};
