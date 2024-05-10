@@ -9,10 +9,6 @@ export const Form = () => {
         e.preventDefault();
         actions.guardarContacto(userInput);
         console.log(userInput);
-    };
-
-    const handleBackHome = () => {
-        console.log("Volviendo a la página de inicio y recargando...");
         window.location.href = "/";
     };
 
@@ -84,9 +80,6 @@ export const Form = () => {
                 <div className="d-flex justify-content-center mt-4">
                     <button className="btn btn-primary" type="submit">
                         Save
-                    </button>
-                    <button className="btn btn-primary mx-2" onClick={handleBackHome}>
-                        Back Home
                     </button>
                 </div>
             </form>

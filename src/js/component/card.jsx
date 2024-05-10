@@ -10,6 +10,8 @@ useEffect(()=>{
     actions.cargarContactos()
 },[]);
 
+
+
 return(
 <>
 {store.contactos.map((contacto, index) =>{
@@ -29,7 +31,9 @@ return(
       </div>
       <div className="col-md-2">
         <div className="icons-container">
-          <i className="fas fa-pen"id="lapiz"></i>
+          <Link to={`/Single/${contacto.id}`}>
+            <i className="fas fa-pen"id="lapiz"></i>
+          </Link>
           <i className="fas fa-times" onClick={()=>actions.borrarContacto(contacto.id)}></i>
         </div>
       </div>
